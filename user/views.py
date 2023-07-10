@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 
 from .forms import UserRegisterForm, ResetPasswordForm, EmailForm
-from .email import RegisterConfirmEmailSender, ResetPasswordEmailSender
+from .email import ResetPasswordEmailSender
 from .tasks import send_register_email
 
 
@@ -61,7 +61,8 @@ class ResetPasswordView(View):
         form = EmailForm(request.POST)
         if form.is_valid():
             user = get_object_or_404(get_user_model(), email=form.cleaned_data["email"])
-            email_sender = ResetPasswordEmailSender(request, user)
+            current_site = str(get_current_site(request))
+            email_sender = ResetPasswordEmailSender(user, domain=current_site)
             email_sender.send_email()
             return HttpResponse("<h1>Проверьте почту, для сброса пароля!</h1>")
 

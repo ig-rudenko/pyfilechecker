@@ -5,7 +5,7 @@ description = ""
 authors = ["ig-rudenko <ig.rudenko1@yandex.ru>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8.10,<4.0.0"
+python = "^3.10"
 django = "^4.2.3"
 celery = "^5.3.1"
 flake8 = "^6.0.0"
@@ -13,6 +13,7 @@ djangorestframework	= "^3.14.0"
 django-crispy-forms = "^2.0"
 crispy-bootstrap5 = "^0.7"
 django-simple-captcha = "^0.5.18"
+redis = "^4.6.0"
 
 
 [build-system]

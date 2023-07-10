@@ -22,6 +22,7 @@ from user.views import Register
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("captcha/", include("captcha.urls")),
+    path("api/", include("checker.api.urls")),
     path("user/", include("user.urls", namespace="user")),
     path(
         "accounts/",

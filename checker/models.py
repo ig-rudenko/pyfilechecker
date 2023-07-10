@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.db import models
 
 
@@ -16,21 +18,25 @@ class File(models.Model):
     def __str__(self):
         return f"File: {self.file.name}"
 
-    def last_check(self):
-        return self.checks.order_by("datetime").values("datetime").first()["datetime"]
+    @cached_property
+    def last_check(self) -> "CheckStatus":
+        return self.checks.first()
 
 
 class CheckStatus(models.Model):
     class Status(models.TextChoices):
-        NON_CHECKED = ("NCK", "Не проверенный")
-        SUCCESS = ("SCS", "Нет ошибок")
-        ERRORS = ("ERR", "Если ошибки")
-        FAIL = ("FAL", "Ошибка анализа")
+        NON_CHECKED = "NCK", "Не проверенный"
+        SUCCESS = "SCS", "Нет ошибок"
+        ERRORS = "ERR", "Есть ошибки"
+        FAIL = "FAL", "Ошибка анализа"
 
-    status = models.CharField(choices=Status.choices, max_length=3, default=Status.NON_CHECKED)
+    status = models.CharField(
+        choices=Status.choices, max_length=3, default=Status.NON_CHECKED
+    )
     datetime = models.DateTimeField(auto_now_add=True)
     result = models.TextField(default="")
     file = models.ForeignKey("File", on_delete=models.CASCADE, related_name="checks")
 
     class Meta:
         db_table = "checks"
+        ordering = ["-datetime"]

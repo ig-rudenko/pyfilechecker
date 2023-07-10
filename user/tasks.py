@@ -14,8 +14,8 @@ def send_register_email(domain: str, user_id: int) -> bool:
 
     # Email
     email_sender = RegisterConfirmEmailSender(
-        domain,
         user,
+        domain=domain,
     )
     email_sender.send_email()
     print("end send_register_email")

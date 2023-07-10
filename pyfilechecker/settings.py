@@ -109,12 +109,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -125,6 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -133,3 +140,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+# Email
+
+EMAIL_HOST = "smtp.yandex.ru"
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = ""
+DEFAULT_FROM_EMAIL = ""
+EMAIL_HOST_PASSWORD = ""
+
+
+# CELERY
+
+# Где будет очередь
+CELERY_BROKER_URL = f"redis://localhost:6379/1"
+
+# Куда отправлять возврат их функций
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
