@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -160,3 +162,23 @@ CELERY_BROKER_URL = f"redis://localhost:6379/1"
 
 # Куда отправлять возврат их функций
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+
+CELERY_TASK_ROUTES = {
+    "user.tasks.send_register_email": {
+        "queue": "email",
+    },
+    "checker.tasks.send_result_by_email": {
+        "queue": "email",
+    },
+    "checker.tasks.send_user_statistic": {
+        "queue": "email",
+    },
+}
+
+CELERY_BEAT_SCHEDULE = {
+    "statistic": {
+        "task": "checker.tasks.collect_statistic",
+        "schedule": crontab(minute="0", hour="4", day_of_week="1"),
+    }
+}

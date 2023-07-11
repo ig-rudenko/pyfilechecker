@@ -11,12 +11,13 @@ class Analyzer:
     def __init__(self, file_id: int):
         self._file = File.objects.get(id=file_id)
         self._file_path = pathlib.Path(self._file.file.path)
+        self._validate_file_path()
 
     def create_result(self) -> CheckStatus:
         check_status = CheckStatus(file=self._file)
 
         try:
-            result = self._analyze_file()
+            result: str = self._analyze_file()
         except BaseException as error:
             print(error)
             check_status.status = CheckStatus.Status.FAIL
@@ -34,17 +35,13 @@ class Analyzer:
 
     def _analyze_file(self) -> str:
         print(f"Start analyzing {self._file_path.absolute().as_posix()}")
-        valid_file = self._validate_file_path()
-
-        if not valid_file:
-            return ""
 
         app = Application()
 
         out = io.TextIOWrapper(buffer=io.BytesIO())
         with redirect_stdout(out):
             # запускаем анализ файла
-            app.run([valid_file])
+            app.run([self._file_path.absolute().as_posix()])
             app.formatter.start()
 
         out.seek(0)
@@ -52,12 +49,11 @@ class Analyzer:
         out.close()
         return data
 
-    def _validate_file_path(self) -> str:
+    def _validate_file_path(self) -> bool:
         if not self._file_path.exists():
             raise File.DoesNotExist()
 
-        return (
-            self._file_path.absolute().as_posix()
-            if self._file_path.is_file() and self._file_path.suffix == ".py"
-            else ""
-        )
+        if self._file_path.is_file() and self._file_path.suffix == ".py":
+            return True
+
+        raise File.DoesNotExist()
