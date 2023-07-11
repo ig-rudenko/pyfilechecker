@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "captcha",
     "rest_framework",
+    "django_celery_beat",
 ]
 
 AUTH_USER_MODEL = "user.User"
@@ -150,9 +151,9 @@ EMAIL_HOST = "smtp.yandex.ru"
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = ""
-DEFAULT_FROM_EMAIL = ""
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_USER = "ig.rudenko1@yandex.ru"
+DEFAULT_FROM_EMAIL = "ig.rudenko1@yandex.ru"
+EMAIL_HOST_PASSWORD = "wgqwqtfhltrowfdr"
 
 
 # CELERY
@@ -176,9 +177,9 @@ CELERY_TASK_ROUTES = {
     },
 }
 
-CELERY_BEAT_SCHEDULE = {
-    "statistic": {
-        "task": "checker.tasks.collect_statistic",
-        "schedule": crontab(minute="0", hour="4", day_of_week="1"),
-    }
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "statistic": {
+#         "task": "checker.tasks.collect_statistic",
+#         "schedule": crontab(minute="0", hour="4", day_of_week="1"),
+#     }
+# }

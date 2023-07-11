@@ -1,21 +1,16 @@
 from celery import shared_task
-from celery.exceptions import Ignore
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 
-from .models import File, CheckStatus
+from .models import CheckStatus
 from .analyzer import Analyzer
 
 
 @shared_task()
 def check_by_flake8(file_id: int) -> int:
-    try:
-        analyzer = Analyzer(file_id=file_id)
-        result = analyzer.create_result()
-        return result.id
-
-    except File.DoesNotExist:
-        raise Ignore()
+    analyzer = Analyzer(file_id=file_id)
+    result = analyzer.create_result()
+    return result.id
 
 
 @shared_task(ignore_result=True)
@@ -46,6 +41,9 @@ def send_user_statistic(user_id: int, files_count: int, checks_count: int):
     try:
         user = user_model.objects.get(id=user_id)
     except user_model.DoesNotExist:
+        return
+
+    if not user.email:
         return
 
     email = EmailMultiAlternatives(
